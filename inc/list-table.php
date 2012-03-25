@@ -1,4 +1,11 @@
 <?php
+/**
+ * List table functionality for Shortcode Disabler
+ * 
+ * @author Christopher Davis <http://christopherdavis.me>
+ * @package Shortcode Disabler
+ * @since 0.1
+ */
 if( ! class_exists( 'WP_List_Table' ) )
 {
 	require_once( trailingslashit( ABSPATH ) . 'wp-admin/includes/class-wp-list-table.php' );
