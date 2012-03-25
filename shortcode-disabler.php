@@ -38,3 +38,19 @@ else
     require_once( CD_SCD_PATH . 'inc/front.php' );
 }
 
+add_action( 'init', 'cd_scd_translate' );
+/**
+ * Loads the plugin textdomain
+ * 
+ * @since 0.1
+ * @uses load_plugin_textdomain
+ */
+function cd_scd_translate()
+{
+    load_plugin_textdomain(
+        'shortcode-disabler',
+        false,
+        dirname( CD_SCD_NAME ) . '/lang/'
+    );
+}
+
