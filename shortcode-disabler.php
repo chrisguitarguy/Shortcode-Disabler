@@ -2,7 +2,7 @@
 /*
 Plugin Name: Shortcode Disabler
 Plugin URI: https://github.com/chrisguitarguy/Shortcode-Disabler
-Description: Sometimes switching themes and plugins causes left shortcodes to pop up. Make them disapear with this plugin
+Description: Sometimes switching themes and plugins causes leftover shortcodes to pop up. Make them disapear with this plugin
 Version: 0.1
 Text Domain: shortcode-disabler
 Domain Path: /lang
@@ -27,6 +27,7 @@ License: GPL2
 */
 
 define( 'CD_SCD_PATH', plugin_dir_path( __FILE__ ) );
+define( 'CD_SCD_NAME', plugin_basename( __FILE__ ) );
 
 if( is_admin() )
 {
