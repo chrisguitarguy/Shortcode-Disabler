@@ -33,6 +33,14 @@ class CD_Shortcode_Disabler_Admin
     protected $nonce_action = 'shortcode_disabler_nonce';
     
     /**
+     * Nonce action for delete URIs
+     * 
+     * @since 0.1
+     * @access protected
+     */
+    protected $delete_nonce = 'shortcode_disabler_delete';
+    
+    /**
      * The URI for the admin page
      * 
      * @since 0.1
@@ -83,6 +91,7 @@ class CD_Shortcode_Disabler_Admin
     function menu_page_cb()
     {
         $opts = get_option( $this->setting, array() );
+        require_once( CD_SCD_PATH . 'inc/list-table.php' );
         ?>
         <div class="wrap">
             <?php screen_icon(); ?>
@@ -99,6 +108,11 @@ class CD_Shortcode_Disabler_Admin
                     <?php submit_button( __( 'Add Shortcode', 'shortcode-disabler' ) ); ?>
                 <?php endif; ?>
             </form>
+            <?php
+                $table = new CD_Shortcode_Disabler_List_Table();
+                $table->prepare_items();
+                $table->display();
+            ?>
         </div>
         <?php
     }
@@ -113,13 +127,33 @@ class CD_Shortcode_Disabler_Admin
     {
         // help stuff here
         
+        $opts = get_option( $this->setting, array() );
+        
+        if( isset( $_GET['delete'] ) && $_GET['delete'] )
+        {
+            $nonce = isset( $_GET['_wpnonce'] ) && $_GET['_wpnonce'] ? $_GET['_wpnonce'] : false;
+            if( ! $nonce || ! wp_verify_nonce( $nonce, $this->delete_nonce ) )
+            {
+                wp_die(
+                    __( "I wouldn't do that if I were you.", 'shortcode-diabler' ),
+                    __( 'Busted', 'shortcode-disabler' )
+                );
+            }
+            
+            if( isset( $opts[$_GET['delete']] ) )
+            {
+                unset( $opts[$_GET['delete']] );
+                update_option( $this->setting, $opt );
+            }
+            wp_redirect( $this->admin_uri );
+        }
+        
         if( isset( $_SERVER['REQUEST_METHOD'] ) && 'POST' == $_SERVER['REQUEST_METHOD'] && ! empty( $_POST ) )
         {
             check_admin_referer( $this->nonce_action );
             $shortcode = isset( $_POST['shortcode_name'] ) ? $_POST['shortcode_name'] : false;
             if( ! $shortcode ) return;
             $content = isset( $_POST['display_content'] ) && $_POST['display_content'] ? 'on' : 'off';
-            $opts = get_option( $this->setting, array() );
             $opts[esc_attr( $shortcode )] = $content;
             update_option( $this->setting, $opts );
             wp_redirect( $this->admin_uri );
